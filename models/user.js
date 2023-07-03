@@ -1,18 +1,14 @@
 'use strict';
 const Users = require('../schema/users');
+const commonMethods = require('../common/method');
 
 exports.register = async function (req, res, next) {
     try {
         const reqBody = req.body
-        console.log("reqBody ====>", reqBody);
-        console.log("password ====>", reqBody.password.length);
         const checkEmailValidation = await Users.find({ "email": reqBody.email, isDeleted: 0 });
-        console.log("checkEmailValidation ===> ", checkEmailValidation);
         if (checkEmailValidation.length > 0) {
-            console.log("Inside if =====>");
             return Promise.reject({ status: 200, error: 1, message: "MESSAGES.USER_EXISTS" });
         } else {
-            console.log("Inside Else ====>");
             // create user model
             //let user = await this.createNewUser(reqBody);
             let user = new Users({
@@ -23,10 +19,10 @@ exports.register = async function (req, res, next) {
             await user.setPassword(reqBody.password);
             let result = await user.save();
             if (result) {
-                // let token = await this.authTokenGenerate(result._id);
-                // let updatedUser = await Users.findByIdAndUpdate(result._id, { authToken: token }, { new: true }).select('+hash');
-                // let access_token = authenticate.encode(updatedUser);
-                // result.authToken = access_token;
+                let token = await commonMethods.authTokenGenerate(result._id);
+                let updatedUser = await Users.findByIdAndUpdate(result._id, { authToken: token }, { new: true }).select('+password');
+                //let access_token = authenticate.encode(updatedUser);
+                result.authToken = token;
 
                 // var emailObj = {
                 //     receiverName: result.firstname+' '+result.lastname,
@@ -40,6 +36,6 @@ exports.register = async function (req, res, next) {
             }
         }
     } catch (error) {
-
+        console.log("Error ====>", error);
     }
 }

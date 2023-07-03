@@ -16,12 +16,11 @@ exports.getUserList = async function (req, res, next) {
 exports.register = async function (req, res, next) {
     try {
         const errors = validationResult(req);
-        //console.log("errors ====>", errors);
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() });
         }
         const register = await userModel.register(req);
-        console.log("register ===>", register);
+        res.status(200).json({data: register, status:200})
     } catch (error) {
 
     }
