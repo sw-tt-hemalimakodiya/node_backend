@@ -1,41 +1,43 @@
 'use strict';
 const Users = require('../schema/users');
-const commonMethods = require('../common/method');
+const { authTokenGenerate, encode} = require('../common/method');
 
-exports.register = async function (req, res, next) {
+exports.register = async function (req) {
     try {
-        const reqBody = req.body
-        const checkEmailValidation = await Users.find({ "email": reqBody.email, isDeleted: 0 });
-        if (checkEmailValidation.length > 0) {
-            return Promise.reject({ status: 200, error: 1, message: "MESSAGES.USER_EXISTS" });
+        const {username, email, password} = req.body
+        const checkUserExist = await Users.find({ email, isDeleted: 0 });
+        if (checkUserExist.length > 0) 
+            return Promise.reject({ status: 401, error: 1, message: "MESSAGES.USER_EXISTS" });
+        
+        let user = new Users({ username, email, password });
+        await user.setPassword(password);
+        let result = await user.save();
+        if (result) {
+            let token = await authTokenGenerate(result._id);
+            let updatedUser = await Users.findByIdAndUpdate(result._id, { authToken: token }, { new: true }).select('+password');
+            result.authToken = encode(updatedUser);
+            return Promise.resolve(result);
         } else {
-            // create user model
-            //let user = await this.createNewUser(reqBody);
-            let user = new Users({
-                username: reqBody.username,
-                email: reqBody.email,
-                password: reqBody.password
-            });
-            await user.setPassword(reqBody.password);
-            let result = await user.save();
-            if (result) {
-                let token = await commonMethods.authTokenGenerate(result._id);
-                let updatedUser = await Users.findByIdAndUpdate(result._id, { authToken: token }, { new: true }).select('+password');
-                //let access_token = authenticate.encode(updatedUser);
-                result.authToken = token;
-
-                // var emailObj = {
-                //     receiverName: result.firstname+' '+result.lastname,
-                //     email: result.email
-                // }
-                // var template = commonMethods.getEmailTemplate('userRegister', emailObj);
-                // commonMethods.sendMail([result.email], template.subject, template.template,[], function(err, data) {});
-                return Promise.resolve(result);
-            } else {
-                return Promise.reject({ status: 200, error: 1, message: "MESSAGES.USER_NOT_ADDED" });
-            }
+            return Promise.reject({ status: 402, error: 1, message: "MESSAGES.USER_NOT_ADDED" });
         }
     } catch (error) {
-        console.log("Error ====>", error);
+        return Promise.reject({ status: 500, error, message: "Internal server errror" });
+    }
+}
+
+exports.login = async function (req) {
+    try {
+        const {email, password} = req.body;
+        const response = await Users.findOne({ email, isDeleted:0 }).select('+password');
+        if (!response){
+            return Promise.reject({ status: 401, message : "MESSAGES.Invalid email"});
+        }
+        if (!response.validPassword(password)){
+            return Promise.reject({ status: 401, message : "MESSAGES.Invalid Password"});
+        }
+        response.authToken = encode(response);
+        return Promise.resolve(response);
+    } catch (error) {
+        return Promise.reject({ status: 500, error, message: "Internal server errror" });
     }
 }

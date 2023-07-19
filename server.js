@@ -3,16 +3,16 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const  { PORT } = process.env;
 const { initPool } = require('./common/database');
-const { errorHandler } = require('./common/middleware');
+const cors = require('cors');
 
 //set of app use
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // Allow CORS
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
     res.header('Access-Control-Expose-Headers', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Credentials', true);
@@ -24,9 +24,6 @@ app.use((req, res, next) => {
 app.initDb = async (poolPromise) => { app.pool = await initPool(poolPromise) }
 
 require('./routes/index')(app)
-
-// error handler
-app.use(errorHandler)
 
 Promise.all([app.initDb(null)]).then(function () {
     app.listen(PORT, () => {

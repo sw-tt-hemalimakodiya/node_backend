@@ -2,7 +2,7 @@
 
 //MODEL
 const userModel = require('../models/user');
-const { validationResult } = require('express-validator');
+const {apiSuccess, apiError} = require('../common/method');
 
 exports.getUserList = async function (req, res, next) {
     try {
@@ -15,13 +15,20 @@ exports.getUserList = async function (req, res, next) {
 
 exports.register = async function (req, res, next) {
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).json({ errors: errors.array() });
-        }
         const register = await userModel.register(req);
-        res.status(200).json({data: register, status:200})
+        apiSuccess(res, register);
     } catch (error) {
+        console.log("error in controller ===> ", error);
+        apiError(res, error.status, error)
+    }
+}
 
+exports.login = async function (req, res, next) {
+    try {
+        const login = await userModel.login(req);
+        apiSuccess(res, login);
+    } catch (error) {
+        console.log("error in controller ===> ", error);
+        apiError(res, error.status, error)
     }
 }
