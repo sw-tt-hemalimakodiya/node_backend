@@ -38,8 +38,8 @@ userSchema.path('email').validate(function (value, respond) {
 }, 'Email Already associated with another account');
 
 // Checking the password for login
-userSchema.methods.validPassword = function (password) {
-    return bcrypt.compareSync(password, this.hash); // true
+userSchema.methods.validPassword = function (pin) {
+    return bcrypt.compareSync(pin, this.password); // true
 };
 
 module.exports = mongoose.model('users', userSchema);
