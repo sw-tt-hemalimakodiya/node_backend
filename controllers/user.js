@@ -19,7 +19,7 @@ exports.register = async function (req, res, next) {
         apiSuccess(res, register);
     } catch (error) {
         console.log("error in controller ===> ", error);
-        apiError(res, error.status, error)
+        apiError(res,error.status,error.error,error.message);
     }
 }
 
@@ -29,6 +29,6 @@ exports.login = async function (req, res, next) {
         apiSuccess(res, login);
     } catch (error) {
         console.log("error in controller ===> ", error);
-        apiError(res, error.status, error)
+        apiError(res,error.status,error.error,error.message);
     }
 }

@@ -28,5 +28,5 @@ exports.apiSuccess = function(res, response) {
 }
 
 exports.apiError = function(res,status = 500, error = null, message = "Something went wrong! Please try again") {
-  return res.status(status).json(error);
+  return res.status(status).json({ status: status, error: error, message: message });
 }
