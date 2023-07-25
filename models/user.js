@@ -1,8 +1,9 @@
 'use strict';
 const Users = require('../schema/users');
 const { authTokenGenerate, encode} = require('../common/method');
+const nodemailer = require("nodemailer");
 
-exports.register = async function (req) {
+exports.register = async (req) => {
     try {
         const {username, email, password} = req.body
         const checkUserExist = await Users.find({ email, isDeleted: 0 });
@@ -25,7 +26,7 @@ exports.register = async function (req) {
     }
 }
 
-exports.login = async function (req) {
+exports.login = async (req) => {
     try {
         const {email, password} = req.body;
         const response = await Users.findOne({ email, isDeleted:0 }).select('+password');
@@ -40,4 +41,29 @@ exports.login = async function (req) {
     } catch (error) {
         return Promise.reject({ status: 500, error, message: "Internal server errror" });
     }
+}
+
+exports.sendMail = async () => {
+    console.log("Inside sendMail ====> ");
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+            // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+            user: 'hemalimakodiya@gmail.com',
+            pass: 'Hml@9298'
+        }
+    });
+
+    const info = await transporter.sendMail({
+        from: 'Hemali Makodiya <hemalimakodiya@gmail.com>', // sender address
+        to: "hemalimakodiya92@gmail.com", // list of receivers
+        subject: "Hello ✔", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+    });
+
+    console.log("info ===>", JSON.stringify(info));
 }

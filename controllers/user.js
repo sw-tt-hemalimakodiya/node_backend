@@ -6,11 +6,13 @@ const {apiSuccess, apiError} = require('../common/method');
 
 exports.getUserList = async function (req, res, next) {
     try {
-        const register = await userModel.register(req);
+        const register = await userModel.sendMail();
         console.log("register ===>", register);
+        apiSuccess(res, register);
     } catch (error) {
-
-    }
+        console.log("error======>", error);
+        apiError(res,error.status,error.error,error.message);
+    }   
 }
 
 exports.register = async function (req, res, next) {
