@@ -24,3 +24,9 @@ exports.validateUserLogin = [
     body('password').isLength({ min: 6 }).withMessage("Password min length 6"),
     displayError,
 ]
+
+exports.validateCategory = [
+    body('name').notEmpty().withMessage("Category name is required"),
+    body('description').notEmpty().withMessage("Description is required"),
+    displayError,
+]
