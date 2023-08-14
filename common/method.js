@@ -25,8 +25,8 @@ exports.decode = (token) => {
 }
 
 //==== Response send ===
-exports.apiSuccess = function(res, response) {
-  return res.status(200).json({status:200, data: response});
+exports.apiSuccess = function(res, response, message) {
+  return res.status(200).json({status:200, data: response, message});
 }
 
 exports.apiError = function(res,status = 500, error = null, message = "Something went wrong! Please try again") {
