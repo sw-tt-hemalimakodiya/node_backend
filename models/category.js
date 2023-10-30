@@ -15,7 +15,6 @@ exports.categoryList = async (headers) => {
 exports.categoryById = async (query, headers) => {
     try {
         const {id} = query
-        console.log("id ===> ", id);
         const response = categorySchema.findById(id)
         return Promise.resolve(response)
     } catch (error) {
@@ -36,7 +35,6 @@ exports.addCategory = async (body, headers) => {
 exports.editCategory = async (query, body, headers) => {
     try {
         const {id} = query
-        console.log("id edit ===> ", id);
         const response = categorySchema.findOneAndUpdate({_id: new mongoose.Types.ObjectId(id), isDeleted:0}, {$set: body})
         if (response) {
             return Promise.resolve(response)

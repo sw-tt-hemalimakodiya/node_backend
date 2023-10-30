@@ -17,7 +17,7 @@ exports.categoryList = async function (req, res, next) {
 
 exports.categoryById = async function (req, res, next) {
     try {
-        const response = await categoryModel.categoryById(req.query, req.headers);
+        const response = await categoryModel.categoryById(req.params, req.headers);
         apiSuccess(res, response, CATEGORY.FETCH_SUCCESS);
     } catch (error) {
         console.log("error======>", error);
@@ -40,7 +40,7 @@ exports.addCategory = async function (req, res, next) {
 
 exports.editCategory = async function (req, res, next) {
     try {
-        const response = await categoryModel.editCategory(req.query, req.body, req.headers);
+        const response = await categoryModel.editCategory(req.params, req.body, req.headers);
         if (response) 
             apiSuccess(res, response, CATEGORY.UPDATE_SUCCESS);
         else
@@ -53,7 +53,7 @@ exports.editCategory = async function (req, res, next) {
 
 exports.deleteCategory = async function (req, res, next) {
     try {
-        const response = await categoryModel.deleteCategory(req.query, req.headers);
+        const response = await categoryModel.deleteCategory(req.params, req.headers);
         if (response) 
             apiSuccess(res, response, CATEGORY.DELETE_SUCCESS);
         else

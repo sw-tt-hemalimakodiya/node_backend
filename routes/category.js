@@ -6,12 +6,12 @@ var categoryController = require('../controllers/category');
 
 router.get('/list', categoryController.categoryList);
 
-router.get('/categoryById', categoryController.categoryById);
+router.get('/categoryById/:id', categoryController.categoryById);
 
 router.post('/', validateCategory, categoryController.addCategory);
 
-router.put('/', validateCategory, categoryController.editCategory);
+router.put('/:id', validateCategory, categoryController.editCategory);
 
-router.delete('/',  categoryController.deleteCategory);
+router.delete('/:id',  categoryController.deleteCategory);
 
 module.exports = router;
