@@ -5,7 +5,7 @@ const categoryModel = require('../models/category');
 const {apiSuccess, apiError} = require('../common/method');
 const {CATEGORY} = require("./../common/messages")
 
-exports.categoryList = async function (req, res, next) {
+exports.categoryList = async function (req, res) {
     try {
         const response = await categoryModel.categoryList(req.headers);
         apiSuccess(res, response, CATEGORY.FETCH_SUCCESS);
@@ -15,9 +15,9 @@ exports.categoryList = async function (req, res, next) {
     }
 }
 
-exports.categoryById = async function (req, res, next) {
+exports.categoryById = async function (req, res) {
     try {
-        const response = await categoryModel.categoryById(req.params, req.headers);
+        const response = await categoryModel.categoryById(req.params.id, req.headers);
         apiSuccess(res, response, CATEGORY.FETCH_SUCCESS);
     } catch (error) {
         console.log("error======>", error);
@@ -25,7 +25,7 @@ exports.categoryById = async function (req, res, next) {
     }
 }
 
-exports.addCategory = async function (req, res, next) {
+exports.addCategory = async function (req, res) {
     try {
         const response = await categoryModel.addCategory(req.body, req.headers);
         if(response)
@@ -38,9 +38,9 @@ exports.addCategory = async function (req, res, next) {
     }
 }
 
-exports.editCategory = async function (req, res, next) {
+exports.editCategory = async function (req, res) {
     try {
-        const response = await categoryModel.editCategory(req.params, req.body, req.headers);
+        const response = await categoryModel.editCategory(req.params.id, req.body, req.headers);
         if (response) 
             apiSuccess(res, response, CATEGORY.UPDATE_SUCCESS);
         else
@@ -51,9 +51,9 @@ exports.editCategory = async function (req, res, next) {
     }
 }
 
-exports.deleteCategory = async function (req, res, next) {
+exports.deleteCategory = async function (req, res) {
     try {
-        const response = await categoryModel.deleteCategory(req.params, req.headers);
+        const response = await categoryModel.deleteCategory(req.params.id, req.headers);
         if (response) 
             apiSuccess(res, response, CATEGORY.DELETE_SUCCESS);
         else

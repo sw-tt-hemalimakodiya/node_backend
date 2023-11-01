@@ -15,9 +15,10 @@ exports.getUserList = async function (req, res, next) {
     }   
 }
 
-exports.register = async function (req, res, next) {
+exports.register = async function (req, res) {
     try {
-        const register = await userModel.register(req);
+        const { username, email, password } = req.body
+        const register = await userModel.register(username, email, password);
         apiSuccess(res, register);
     } catch (error) {
         console.log("error in controller ===> ", error);
@@ -25,9 +26,10 @@ exports.register = async function (req, res, next) {
     }
 }
 
-exports.login = async function (req, res, next) {
+exports.login = async function (req, res) {
     try {
-        const login = await userModel.login(req);
+        const { email, password } = req.body;
+        const login = await userModel.login(email, password);
         apiSuccess(res, login);
     } catch (error) {
         console.log("error in controller ===> ", error);
