@@ -10,6 +10,36 @@ exports.authTokenGenerate = (userId) => {
     expiresIn: "365d" // expires in 365 days
   });
 }
+//Verify token
+exports.verifyToken = (req, res, next) => {
+  const reqToByPass = [
+    '/api/user/login',
+    '/api/user/register',
+    '/api/user/forgot-password',
+    '/api/user/reset-password'
+  ]
+
+  if (reqToByPass.indexOf(req.path) != -1) {
+    next();
+  } else if (req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1]
+    jwt.verify(token, JWT_SECRET_KEY, { algorithms: ['HS256'] }, function (err, payload) {
+			if (err) {
+				let msg = 'Invalid Token'
+        if (response.name === 'TokenExpiredError')
+          msg = 'Token is expired'
+        this.apiError(res, 401, err, msg || response.message);
+			} else {
+				// let bytes  = CryptoJS.AES.decrypt(payload.data, JWT_SECRET_KEY);
+				// let decryptedData  = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        // console.log("decryptedData ==> ", decryptedData);
+				next()
+			}
+		});
+  } else {
+    this.apiError(res, 401, [], "Unauthorized access");
+  }
+}
 
 exports.encode = (payload) => {
   let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(payload), JWT_SECRET_KEY).toString();

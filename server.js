@@ -4,6 +4,7 @@ require('dotenv').config();
 const  { PORT } = process.env;
 const { initPool } = require('./common/database');
 const cors = require('cors');
+const { verifyToken } = require('./common/method')
 
 //set of app use
 const app = express();
@@ -19,6 +20,9 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
     next();
 });
+
+//Verify token on each request.
+app.use(verifyToken)
 
 //initialize DB connection
 app.initDb = async (poolPromise) => { app.pool = await initPool(poolPromise) }
