@@ -5,10 +5,10 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Set the directory where uploaded files will be stored
+        cb(null, 'uploads/category/'); // Set the directory where uploaded files will be stored
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        cb(null, `${Math.floor(Math.random() * 10000)}_${file.originalname}`);
     },
 });
 const upload = multer({ storage });
@@ -19,7 +19,7 @@ router.get('/list', categoryController.categoryList);
 
 router.get('/categoryById/:id', categoryController.categoryById);
 
-router.post('/', upload.single('image'), categoryController.addCategory);
+router.post('/', upload.single('image'), validateCategory, categoryController.addCategory);
 
 router.put('/:id', validateCategory, categoryController.editCategory);
 

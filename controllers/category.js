@@ -27,7 +27,7 @@ exports.categoryById = async function (req, res) {
 
 exports.addCategory = async function (req, res) {
     try {
-        const response = await categoryModel.addCategory(req.body, req.headers);
+        const response = await categoryModel.addCategory(req.body, req.file.path.replace(/\\/g, '/'));
         if(response)
             apiSuccess(res, response, CATEGORY.ADD_SUCCESS);
         else

@@ -25,11 +25,11 @@ exports.categoryById =  (id, headers) => {
     });
 }
 
-exports.addCategory =  (body, headers) => {
+exports.addCategory =  (body, filePath) => {
     return new Promise(async (resolve, reject) => {
         try {
             body.status = JSON.parse(body.status);
-            console.log("body =====>", body);
+            body.imagePath = filePath;
             const categoryData = new categorySchema(body);
             const response = await categoryData.save();
             resolve(response)
