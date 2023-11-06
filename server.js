@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 require('dotenv').config();
 const  { PORT } = process.env;
 const { initPool } = require('./common/database');
@@ -8,8 +7,8 @@ const { verifyToken } = require('./common/method')
 
 //set of app use
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Allow CORS

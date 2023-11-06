@@ -28,6 +28,8 @@ exports.categoryById =  (id, headers) => {
 exports.addCategory =  (body, headers) => {
     return new Promise(async (resolve, reject) => {
         try {
+            body.status = JSON.parse(body.status);
+            console.log("body =====>", body);
             const categoryData = new categorySchema(body);
             const response = await categoryData.save();
             resolve(response)

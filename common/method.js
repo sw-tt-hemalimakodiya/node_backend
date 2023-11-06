@@ -26,9 +26,9 @@ exports.verifyToken = (req, res, next) => {
     jwt.verify(token, JWT_SECRET_KEY, { algorithms: ['HS256'] }, function (err, payload) {
 			if (err) {
 				let msg = 'Invalid Token'
-        if (response.name === 'TokenExpiredError')
+        if (res.name === 'TokenExpiredError')
           msg = 'Token is expired'
-        this.apiError(res, 401, err, msg || response.message);
+        this.apiError(res, 401, err, msg || res.message);
 			} else {
 				// let bytes  = CryptoJS.AES.decrypt(payload.data, JWT_SECRET_KEY);
 				// let decryptedData  = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
