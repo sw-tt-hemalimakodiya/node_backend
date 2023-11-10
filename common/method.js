@@ -1,5 +1,6 @@
 
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const CryptoJS = require("crypto-js");
 const nodemailer = require("nodemailer");
 const { JWT_SECRET_KEY, JWT_EXPIRES_IN, PROJECT_NAME, SMTP_SERVICES, SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS } = process.env
@@ -19,9 +20,13 @@ exports.verifyToken = (req, res, next) => {
     '/api/user/reset-password'
   ]
 
+  console.log("req.path ==> ", req.path);
   if (reqToByPass.indexOf(req.path) != -1) {
     next();
-  } else if (req.headers.authorization) {
+  }else if(req.path.includes('/src/assets/')){
+    console.log("File ==> ",(path.resolve(__dirname)+'../'+req.path).replace(/\\/g, '/'));
+    res.sendFile((path.resolve(__dirname)+req.path).replace(/\\/g, '/'))
+} else if (req.headers.authorization) {
     const token = req.headers.authorization.split(' ')[1]
     jwt.verify(token, JWT_SECRET_KEY, { algorithms: ['HS256'] }, function (err, payload) {
 			if (err) {

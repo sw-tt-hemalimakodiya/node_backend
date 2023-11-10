@@ -5,7 +5,7 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/category/'); // Set the directory where uploaded files will be stored
+        cb(null, 'assets/image/category/'); // Set the directory where uploaded files will be stored
     },
     filename: (req, file, cb) => {
         cb(null, `${Math.floor(Math.random() * 10000)}_${file.originalname}`);
